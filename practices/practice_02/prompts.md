@@ -1,17 +1,17 @@
 # Журнал экспериментов Практики 2
 
-- Выбранный слабый артефакт Практики 1:
-- Что в нём нужно улучшить:
-- Как поймём, что изменение полезно:
+- Выбранный слабый артефакт Практики 1: `practices/practice_01/tests_load.md`
+- Что в нём нужно улучшить: нет p99, мало сценариев и методики, слабое evidence, отсутствует политика запуска.
+- Как поймём, что изменение полезно: появились проверяемые SLO (p95/p99, error rate), сценарии (включая >20k и таймаут 10 с), методика, приёмка/evidence, триггеры политики; автопроверки проходят в CI.
 
 | Техника | Файл эксперимента | Изменённый файл Практики 1 | Конкретное изменение | Проверка | Что отклонили |
 |---|---|---|---|---|---|
-| Few-shot | [`few_shot/experiment.md`](few_shot/experiment.md) |  |  |  |  |
-| R.C.T.F. | [`rctf/experiment.md`](rctf/experiment.md) |  |  |  |  |
-| Chain of Verification | [`chain_of_verification/experiment.md`](chain_of_verification/experiment.md) |  |  |  |  |
-| Tree of Thoughts | [`tree_of_thoughts/experiment.md`](tree_of_thoughts/experiment.md) |  |  |  |  |
-| RAG | [`rag/experiment.md`](rag/experiment.md) |  |  |  |  |
-| ReAct | [`react/experiment.md`](react/experiment.md) |  |  |  |  |
+| Few-shot | [`few_shot/experiment.md`](few_shot/experiment.md) | `few_shot/tests_load.md` | Добавлены цели/SLO (p95/p99), сценарии S1–S6, методика, приёмка/evidence, политика запуска | Автопроверки порогов; 100% 413; 100% контролируемых таймаутов; 0 утечек в логах | Расплывчатые формулировки без evidence; отсутствие профилей нагрузки; логирование diff/ответов |
+| R.C.T.F. | [`rctf/experiment.md`](rctf/experiment.md) | `rctf/tests_load.md` | Те же изменения + блок «Источники» с опорой на SEC‑1/API‑1/REL‑1/OBS‑1/OUT‑1 | Автопроверки порогов; выборка 413=100%; проверка таймаутов и логов | Неподтверждённые требования; произвольные пороги; логирование diff/ответа |
+| Chain of Verification | [`chain_of_verification/experiment.md`](chain_of_verification/experiment.md) | `chain_of_verification/tests_load.md` | Уточнены SLO и сценарии; добавлены методика, приёмка, политика; мок LLM и детальные evidence для CI | Все вопросы Verification Log = Pass; 100% 413; 100% контролируемых таймаутов; OBS‑1 соблюдён | Отсутствие p99; «метрики/логи» без проверок; требования без evidence |
+| Tree of Thoughts | [`tree_of_thoughts/experiment.md`](tree_of_thoughts/experiment.md) | `tree_of_thoughts/tests_load.md` | Выбрана альтернатива A: p99, burst/soak, таймаут LLM, SEC‑1/OBS‑1; добавлены методика, приёмка, политика | Автопороговые проверки p95/p99/error rate; 100% 413; 100% контролируемых таймаутов; проверка логов | Альтернатива B (слишком слабо), C (радикально ломает структуру) |
+| RAG | [`rag/experiment.md`](rag/experiment.md) | `rag/tests_load.md` | Усиление по источникам: SLO p95/p99, сценарии, методика, приёмка/evidence, политика; отмечены места «Требуется решение команды» | Сопоставление с CASE/context; автопороговые проверки; проверка 413/таймаутов/логов | Конфликтующие/неподтверждённые числа; логирование diff/ответа |
+| ReAct | [`react/experiment.md`](react/experiment.md) | `react/tests_load.md` | Точечные правки через Draft/Revise: добавлены SLO, сценарии, методика, приёмка/evidence, политика | Checks = OK: SLO, сценарии (>20k и 10 с), методика, приёмка, политика, SEC‑1/OBS‑1 | Формулировки без evidence; внешние источники; произвольные пороги |
 
 ## Независимое ревью
 
