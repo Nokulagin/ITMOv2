@@ -1,0 +1,40 @@
+{
+  "request": {
+    "model": "qwen3.5:4b",
+    "messages": [
+      {
+        "role": "user",
+        "content": "# Notify Mini\nУчебный сервис подписки. Подписчики хранятся в памяти процесса.\nВ service.py функция subscribe добавляет непустое имя в множество.\nПовторное добавление имени не создаёт дубликат.\n\nПроверка: make test.\nЗависимости: стандартная библиотека Python 3.10+.\n\n\nКакая CI-система запускает тесты проекта?"
+      }
+    ],
+    "stream": false,
+    "think": false,
+    "options": {
+      "temperature": 0.2,
+      "seed": 42,
+      "num_ctx": 4096,
+      "num_predict": 512
+    }
+  },
+  "response": {
+    "model": "qwen3.5:4b",
+    "created_at": "2026-09-25T07:31:11.375595Z",
+    "message": {
+      "role": "assistant",
+      "content": "В предоставленном описании задачи **не указана конкретная CI-система** (например, GitHub Actions, GitLab CI, Jenkins и т.д.).\n\nОписание содержит только требования к функционалу (`service.py`, множество, проверка через `make test`) и зависимости (стандартная библиотека Python 3.10+), но не упоминает инструменты для автоматизации тестирования в репозитории.\n\nЧтобы определить, какая система используется, нужно:\n1. Посмотреть на структуру проекта (файл `.github/workflows/`, `.gitlab-ci.yml`, `Jenkinsfile` и т.д.).\n2. Или найти документацию проекта, где может быть указан CI-провайдер.\n\nЕсли вы имеете в виду стандартную практику для таких задач без явного указания провайдера, то чаще всего используются **GitHub Actions** или **GitLab CI**, но это предположение."
+    },
+    "done": true,
+    "done_reason": "stop",
+    "total_duration": 19787281792,
+    "load_duration": 1825834,
+    "prompt_eval_count": 100,
+    "prompt_eval_cached_count": 0,
+    "prompt_eval_duration": 1224229000,
+    "eval_count": 196,
+    "eval_duration": 18519669000
+  },
+  "wall_seconds": 19.82973816699814,
+  "load_seconds": 0.001825834,
+  "total_seconds": 19.787281792,
+  "decode_tokens_per_second": 10.58334249926389
+}
