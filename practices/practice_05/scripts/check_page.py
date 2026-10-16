@@ -270,8 +270,14 @@ def check_signup(doc, cards, project_dir):
   expect(any(s.attrs.get("src") == "script.js" for s in doc.find_all("script")), "index.html loads script.js")
   js_path = project_dir / "script.js"
   js = js_path.read_text(encoding="utf-8") if js_path.exists() else ""
-  expect(js and not re.search(r"\bfetch\s*\(|XMLHttpRequest|sendBeacon|WebSocket|\.submit\s*\(", js),
-         "script.js sends no network requests")
+  # Feature C: the only network call is fetch('/api/signup'); any other fetch use, other transports,
+  # dynamic import and form.submit() fail.
+  fetch_uses = re.findall(r"\bfetch\b", js)
+  api_fetches = re.findall(r"\bfetch\s*\(\s*(['\"])/api/signup\1", js)
+  expect(js and len(fetch_uses) == len(api_fetches) <= 1
+         and not re.search(r"XMLHttpRequest|sendBeacon|WebSocket|EventSource|\bnew\s+Request\s*\("
+                           r"|\bimport\s*\(|\.submit\s*\(", js),
+         "script.js calls only /api/signup")
   return results
 
 

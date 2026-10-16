@@ -1,5 +1,5 @@
 // Feature B: sign-up form with live price calculation and client-side validation.
-// No network requests: a valid submit replaces the form with a summary.
+// Feature C: a valid form is sent once to /api/signup (same origin); the summary shows the server's answer.
 
 (function () {
   const form = document.getElementById('signup-form');
@@ -8,13 +8,20 @@
   const DISCOUNTS = { 1: 0, 3: 5, 6: 10 };
   const DURATION_LABELS = { 1: '1 месяц', 3: '3 месяца', 6: '6 месяцев' };
   const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const GENERAL_ERROR = 'Не удалось отправить заявку. Попробуйте ещё раз.';
+  const REQUEST_TIMEOUT_MS = 10000;
   let attempted = false;
+  let pending = false;
 
   const program = form.elements.program;
   const grade = form.elements.grade;
   const parentName = form.elements.parent_name;
   const email = form.elements.email;
   const consent = form.elements.consent;
+  const submitButton = form.querySelector('[type="submit"]');
+  const status = document.getElementById('signup-status');
+  // Server error keys in form order; any other key (e.g. months) gets the general error.
+  const FIELDS_BY_KEY = { program, grade, parent_name: parentName, email, consent };
 
   const output = {
     monthly: document.getElementById('signup-monthly'),
@@ -140,9 +147,7 @@
     return invalid;
   }
 
-  function showSummary() {
-    const chosen = selectedProgram();
-    const price = calculate(chosen);
+  function showSummary(result) {
     const summary = document.createElement('div');
     summary.className = 'signup-summary';
     summary.innerHTML = `
@@ -154,11 +159,70 @@
       </dl>
       <p class="signup-summary__text">Мы свяжемся с вами по email</p>`;
     const values = summary.querySelectorAll('dd');
-    values[0].textContent = `«${chosen.name}»`;
-    values[1].textContent = DURATION_LABELS[price.count];
-    values[2].textContent = formatRub(price.total);
+    values[0].textContent = `«${result.program_name}»`;
+    values[1].textContent = DURATION_LABELS[result.months];
+    values[2].textContent = result.display.total;
     form.replaceWith(summary);
     summary.querySelector('.signup-summary__title').focus();
+  }
+
+  function setPending(value) {
+    pending = value;
+    // aria-disabled instead of disabled: disabling the focused button would drop focus to <body>.
+    if (value) submitButton.setAttribute('aria-disabled', 'true');
+    else submitButton.removeAttribute('aria-disabled');
+  }
+
+  function showGeneralError() {
+    status.textContent = GENERAL_ERROR;
+    submitButton.focus();
+  }
+
+  function showServerErrors(body) {
+    const invalid = [];
+    Object.entries(FIELDS_BY_KEY).forEach(function ([key, field]) {
+      if (!body.errors[key]) return;
+      if (key === 'program' && body.suggested_program) showMismatch(grade.value);
+      else setError(field, body.errors[key]);
+      invalid.push(field);
+    });
+    if (Object.keys(body.errors).some((key) => !(key in FIELDS_BY_KEY))) showGeneralError();
+    if (invalid.length) invalid[0].focus();
+  }
+
+  function payload() {
+    return {
+      program: program.value,
+      grade: Number(grade.value),
+      months: months(),
+      parent_name: parentName.value,
+      email: email.value,
+      consent: consent.checked,
+    };
+  }
+
+  async function send() {
+    setPending(true);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    try {
+      const response = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload()),
+        signal: controller.signal,
+      });
+      const body = await response.json().catch(() => null);
+      if (response.status === 201 && body) showSummary(body);
+      else if (response.status === 400 && body && body.errors) showServerErrors(body);
+      else showGeneralError();
+    } catch (error) {
+      // Server not running, page opened via file://, or no answer within the timeout.
+      showGeneralError();
+    } finally {
+      clearTimeout(timer);
+      setPending(false);
+    }
   }
 
   form.addEventListener('change', function (event) {
@@ -170,13 +234,15 @@
 
   form.addEventListener('submit', function (event) {
     event.preventDefault();
+    if (pending) return;
     attempted = true;
+    status.textContent = '';
     const invalid = validate();
     if (invalid.length) {
       invalid[0].focus();
       return;
     }
-    showSummary();
+    send();
   });
 
   document.querySelectorAll('.program-card__pick').forEach(function (link) {

@@ -718,6 +718,25 @@ a {
   cursor: pointer;
 }
 
+.signup-form__submit[aria-disabled="true"] {
+  cursor: progress;
+}
+
+.signup-form__status {
+  padding: var(--space-3) var(--space-4);
+  border-left: 0.25rem solid var(--color-margin);
+  background: var(--color-white);
+  color: var(--color-margin);
+  font-weight: 700;
+}
+
+/* Empty: stays in the accessibility tree for role="alert", but takes no grid row or gap. */
+.signup-form__status:empty {
+  position: absolute;
+  padding: 0;
+  border: 0;
+}
+
 .signup-summary {
   max-width: 32rem;
 }
@@ -827,5 +846,9 @@ a {
   .signup-price {
     position: sticky;
     top: var(--space-4);
+  }
+
+  .signup-form__status {
+    grid-column: 2;
   }
 }

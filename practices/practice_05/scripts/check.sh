@@ -36,6 +36,19 @@ if [ -f "$project_dir/mcp/olympiad_pricing/server.py" ]; then
   fi
 fi
 
+if [ -f "$project_dir/server/app.py" ]; then
+  echo
+  echo "== sign-up backend"
+  if backend_output=$(python3 "$script_dir/test_backend.py" "$project_dir" 2>&1); then
+    echo "$backend_output" | tail -1
+    echo "PASS  backend self-test"
+  else
+    echo "$backend_output" | grep -E '^FAIL|Error|checks passed'
+    echo "FAIL  backend self-test"
+    status=1
+  fi
+fi
+
 if [ -f "$project_dir/script.js" ]; then
   echo
   echo "== script.js syntax"

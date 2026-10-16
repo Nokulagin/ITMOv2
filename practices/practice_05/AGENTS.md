@@ -11,18 +11,22 @@ If this file and `docs/requirements.md` disagree, follow `docs/requirements.md` 
 - `styles.css`: the only stylesheet.
 - `script.js`: optional, only if a feature needs JavaScript.
 - `docs/requirements.md`: product requirements. Do not edit unless asked.
-- `scripts/check.sh`, `scripts/check_page.py`, `scripts/test_mcp_pricing.py`: the check runner.
-  Do not edit or weaken unless asked.
+- `scripts/check.sh`, `scripts/check_page.py`, `scripts/test_mcp_pricing.py`, `scripts/test_backend.py`:
+  the check runner. Do not edit or weaken unless asked.
 - `mcp/olympiad_pricing/server.py`: our MCP server (tool `quote`), registered in `.mcp.json`.
+- `server/app.py`: the local backend (Feature C): serves the page and `POST /api/signup`.
+- `server/data/`: stored sign-ups (SQLite). Personal data: git-ignored, never commit or log it.
 
 Do not create other pages, stylesheets, folders or build files.
-Project tooling lives only in `docs/`, `scripts/`, `mcp/` and `.claude/`.
+The backend lives only in `server/`; project tooling lives only in `docs/`, `scripts/`, `mcp/` and `.claude/`.
 `docs/report.html` is the homework report, not a page of the site.
 
 ## Check
 - Run `sh scripts/check.sh` from this folder. Exit code 0 = PASS, 1 = FAIL.
 - It checks the page contract from `docs/requirements.md` (sections, exact counts, prices, anchors),
-  stack rules (no `<img>`, no external resources), the MCP server self-test and `git diff --check`.
+  stack rules (no `<img>`, no external resources), the MCP server self-test, the backend test
+  (`scripts/test_backend.py`, starts its own server on a free port with a temporary database)
+  and `git diff --check`.
 - A `PostToolUse` hook (`.claude/settings.json`) runs it after every Edit/Write in this folder.
   On FAIL it blocks with the failing checks: fix the cause, never the runner.
 - It does not open a browser: keyboard, layout, contrast and console still need a browser check.
@@ -31,14 +35,17 @@ Project tooling lives only in `docs/`, `scripts/`, `mcp/` and `.claude/`.
   computing by hand; its `display` strings are exactly what the sign-up calculator must show.
 
 ## Stack rules
-- Vanilla HTML, CSS and JavaScript only.
+- Page: vanilla HTML, CSS and JavaScript only.
+- Backend: Python standard library only (`http.server`, `sqlite3`); no pip packages.
 - No frameworks, libraries, CDNs, npm packages or build steps.
 - No external images or fonts; use inline SVG, CSS shapes or system fonts.
 
 ## Run locally
-- Open `index.html` in a browser, or
-- `python3 -m http.server 8000` and open http://localhost:8000
-  (in a second worktree use another port, e.g. 8001: worktrees do not isolate ports)
+- `python3 server/app.py` and open http://127.0.0.1:8000 (page and sign-up API on one origin).
+  Options: `--port 8001` (in a second worktree: worktrees do not isolate ports), `--db <path>`
+  (keep test data out of `server/data/`).
+- Opening `index.html` directly or via `python3 -m http.server` shows the page, but sign-up
+  shows «Не удалось отправить заявку…»: there is no API.
 
 ## Content rules
 - All visible text is in Russian. Code, class names and comments are in English.
@@ -66,7 +73,8 @@ Project tooling lives only in `docs/`, `scripts/`, `mcp/` and `.claude/`.
 - [ ] Every anchor link and CTA scrolls to an existing section.
 - [ ] Layout works at 360px, 768px and 1280px with no horizontal scroll.
 - [ ] Tab through the whole page: nothing is skipped or trapped.
-- [ ] No console errors.
+- [ ] No console errors (with the page served by `python3 server/app.py`).
+- [ ] Sign-up works end to end through the server; nothing in `server/data/` is staged in git.
 - [ ] No content that is not in `docs/requirements.md`.
 
 ## Workflow

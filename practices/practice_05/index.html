@@ -310,13 +310,13 @@
 
             <div class="signup-form__field">
               <label class="signup-form__label" for="signup-name">Имя родителя</label>
-              <input class="signup-form__control" type="text" id="signup-name" name="parent_name" autocomplete="name" required aria-describedby="signup-name-error">
+              <input class="signup-form__control" type="text" id="signup-name" name="parent_name" autocomplete="name" maxlength="100" required aria-describedby="signup-name-error">
               <p class="signup-form__error" id="signup-name-error"></p>
             </div>
 
             <div class="signup-form__field">
               <label class="signup-form__label" for="signup-email">Email родителя</label>
-              <input class="signup-form__control" type="email" id="signup-email" name="email" autocomplete="email" required aria-describedby="signup-email-error">
+              <input class="signup-form__control" type="email" id="signup-email" name="email" autocomplete="email" maxlength="254" required aria-describedby="signup-email-error">
               <p class="signup-form__error" id="signup-email-error"></p>
             </div>
 
@@ -347,6 +347,7 @@
             <p class="signup-price__hint" id="signup-price-hint">Выберите программу</p>
             <button class="button button--primary signup-form__submit" type="submit">Отправить заявку</button>
           </div>
+          <p class="signup-form__status" id="signup-status" role="alert"></p>
         </form>
       </div>
     </section>

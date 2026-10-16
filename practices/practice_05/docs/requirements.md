@@ -4,6 +4,7 @@
 Olympiad Start is a fictional teaching landing page for a math olympiad training camp for kids who are just starting out.
 UI language: Russian.
 Stack: vanilla HTML, CSS and JavaScript. No JS frameworks or runtime npm dependencies.
+Local backend on the Python standard library only (Feature C); no pip packages.
 Everything lives on one page: `index.html`.
 
 Do not invent factual claims about a real business: real addresses, real coaches, olympiad results or medals,
@@ -39,7 +40,7 @@ Add a `#signup` section to `index.html` with a sign-up form and live price calcu
   - email must be a valid format;
   - grade must match the program (Старт 5–6, Основа 7–8, Интенсив 9); otherwise suggest the right program.
 - Errors appear next to the field, in Russian, and are announced to screen readers (`aria-live` or `aria-describedby`).
-- On valid submit: no network request; replace the form with a confirmation summary
+- On valid submit: one request to `/api/signup` on the same origin (Feature C); replace the form with a confirmation summary
   (program, duration, total, «Мы свяжемся с вами по email»).
 - «Выбрать» buttons on program cards scroll to `#signup` and preselect that program.
 - JavaScript lives in `script.js`.
@@ -55,6 +56,25 @@ Clarifications (decided by the product owner):
   to it and recalculates the price, e.g. «Для 7 класса подходит «Основа»» + «Выбрать «Основу»».
 - Grade is a `<select>` with options 5–9.
 - After a valid submit, focus moves to the confirmation summary heading.
+
+## Feature C — sign-up backend
+A local server accepts a sign-up from the page, prices it on the server and stores it.
+- Start: `python3 server/app.py`, page at http://127.0.0.1:8000. Listens on `127.0.0.1` only.
+- Serves only `index.html`, `styles.css` and `script.js`; every other path is not found.
+- `POST /api/signup` with JSON `{program, grade, months, parent_name, email, consent}`:
+  - the price is computed on the server from this document; prices sent by the client are ignored;
+  - the same validation as the form; errors use the form's messages per field;
+  - only same-origin JSON requests are accepted;
+  - a valid request is stored in a local SQLite file under `server/data/` (not in git).
+- The page shows the summary only after the server stored the request, built from the server's answer.
+- If the request fails or the server does not answer in 10 seconds, the form stays filled in and shows
+  «Не удалось отправить заявку. Попробуйте ещё раз.».
+- Error texts only the API returns (the form cannot send such values):
+  «Выберите срок обучения.», «Имя — не длиннее 100 символов.», «Email — не длиннее 254 символов.».
+- Not included: admin page or viewing stored requests, email sending, authentication, payments,
+  deployment or HTTPS, a price API for the calculator, deduplication, a retention policy
+  (stored data is deleted by hand).
+- Feature A and Feature B must keep working: the live calculator stays in the browser.
 
 Shared requirements:
 - One page only: `index.html`.
