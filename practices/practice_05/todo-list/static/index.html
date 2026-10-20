@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Список задач</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="page-header">
+    <h1 class="page-title">Список задач</h1>
+  </header>
+
+  <main class="page">
+    <section class="add-section" aria-label="Добавление задачи">
+      <form id="add-form" class="add-form" novalidate>
+        <div class="add-form__field">
+          <label class="add-form__label" for="title-input">Новая задача</label>
+          <input
+            id="title-input"
+            class="add-form__input"
+            type="text"
+            name="title"
+            placeholder="Что нужно сделать?"
+            autocomplete="off">
+          <p id="title-error" class="message message--field" role="alert"></p>
+        </div>
+        <button id="add-button" class="button button--primary add-form__button" type="submit">Добавить</button>
+      </form>
+    </section>
+
+    <section class="list-section" aria-label="Задачи">
+      <p id="counter" class="counter" hidden></p>
+      <p id="list-message" class="message message--list" role="alert"></p>
+      <p id="list-status" class="status" role="status"></p>
+      <ul id="task-list" class="task-list"></ul>
+    </section>
+  </main>
+</body>
+</html>
