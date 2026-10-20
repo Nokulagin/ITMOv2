@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Отчёт: todo-list, процесс разработки</title>
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --panel: #ffffff;
+    --text: #1d2330;
+    --muted: #4b5563;
+    --line: #c9ced8;
+    --orch: #1f5fbf;
+    --session: #15803d;
+    --agent: #7c3aed;
+    --check: #b45309;
+    --human: #0f766e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12151c;
+      --panel: #1a1f2a;
+      --text: #e6e9ef;
+      --muted: #aab2c0;
+      --line: #374151;
+      --orch: #7fb0ff;
+      --session: #6fd495;
+      --agent: #c4a7ff;
+      --check: #f5b75c;
+      --human: #6fd4c8;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12151c;
+    --panel: #1a1f2a;
+    --text: #e6e9ef;
+    --muted: #aab2c0;
+    --line: #374151;
+    --orch: #7fb0ff;
+    --session: #6fd495;
+    --agent: #c4a7ff;
+    --check: #f5b75c;
+    --human: #6fd4c8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 1040px; margin: 0 auto; padding: 1rem; }
+  h1 { font-size: 1.75rem; margin: 0.5rem 0; }
+  h2 { font-size: 1.3rem; margin: 2rem 0 0.75rem; }
+  p, li { color: var(--text); }
+  .muted { color: var(--muted); }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 0.75rem 0;
+  }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; }
+  .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 0.75rem; }
+  .stat b { display: block; font-size: 1.5rem; }
+  table { width: 100%; border-collapse: collapse; background: var(--panel); }
+  th, td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 0.9rem; color: var(--muted); }
+  code { font: 0.9em ui-monospace, Menlo, monospace; }
+  .legend span { display: inline-block; margin-right: 1rem; font-size: 0.9rem; }
+  .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 4px; }
+  svg text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .diagram { width: 100%; height: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+  .box-title { font-size: 15px; font-weight: 700; }
+  .box-sub { font-size: 12px; }
+  .arrow { fill: none; stroke: var(--muted); stroke-width: 1.8; marker-end: url(#arr); }
+  .back { fill: none; stroke: var(--check); stroke-width: 1.8; stroke-dasharray: 6 4; marker-end: url(#arrBack); }
+  .lbl { font-size: 12px; fill: var(--check); }
+  ul { padding-left: 1.2rem; }
+  li { margin: 0.25rem 0; }
+  @media (max-width: 600px) {
+    h1 { font-size: 1.35rem; }
+    table, thead, tbody, tr, th, td { display: block; }
+    thead { display: none; }
+    tr { border-bottom: 1px solid var(--line); padding: 0.5rem 0; }
+    td { border: 0; padding: 0.15rem 0; }
+    td::before { content: attr(data-label) ": "; color: var(--muted); }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>todo-list: отчёт о процессе разработки</h1>
+  <p class="muted">Учебный проект ДЗ5. Дата: 2026-10-20. Ветка <code>2026_Nokulagin_practice_5</code>, итоговый коммит <code>3198601</code>.</p>
+
+  <div class="stats">
+    <div class="stat"><b>74</b>тестов unittest, все проходят</div>
+    <div class="stat"><b>38 + 28</b>задач логики и UI, все отмечены</div>
+    <div class="stat"><b>21</b>решение в контракте (v1.1)</div>
+    <div class="stat"><b>11</b>находок анализа (C1–C11), все закрыты</div>
+    <div class="stat"><b>4</b>агента реализации и проверки</div>
+  </div>
+
+  <h2>Процесс работы</h2>
+  <p class="muted">Сплошная линия: порядок этапов. Пунктирная линия: возврат правок. Цвет: <span class="swatch" style="background:var(--orch)"></span>оркестратор,
+    <span class="swatch" style="background:var(--session)"></span>сессии спецификаций,
+    <span class="swatch" style="background:var(--agent)"></span>агенты реализации,
+    <span class="swatch" style="background:var(--check)"></span>проверка,
+    <span class="swatch" style="background:var(--human)"></span>человек.</p>
+
+  <svg class="diagram" viewBox="0 0 1020 930" role="img" aria-labelledby="diagram-title diagram-desc">
+    <title id="diagram-title">Диаграмма процесса разработки todo-list</title>
+    <desc id="diagram-desc">Диалог с оркестратором, конституция, две сессии спецификаций UI и логики, диалог и контракт, планы и задачи в двух сессиях, анализ, реализация двумя агентами, интеграция, сверка, приёмка и коммит. Возвраты правок идут назад к контракту и к агентам реализации.</desc>
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+      </marker>
+      <marker id="arrBack" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--check)"/>
+      </marker>
+    </defs>
+
+    <!-- Стрелки: основной поток -->
+    <path class="arrow" d="M500 76 V110"/>
+    <path class="arrow" d="M500 166 V183 H250 V200"/>
+    <path class="arrow" d="M500 166 V183 H750 V200"/>
+    <path class="arrow" d="M250 264 V282 H500 V300"/>
+    <path class="arrow" d="M750 264 V282 H500"/>
+    <path class="arrow" d="M500 356 V373 H250 V390"/>
+    <path class="arrow" d="M500 356 V373 H750 V390"/>
+    <path class="arrow" d="M250 454 V472 H500 V480"/>
+    <path class="arrow" d="M750 454 V472 H500"/>
+    <path class="arrow" d="M500 536 V553 H250 V570"/>
+    <path class="arrow" d="M500 536 V553 H750 V570"/>
+    <path class="arrow" d="M250 634 V652 H500 V660"/>
+    <path class="arrow" d="M750 634 V652 H500"/>
+    <path class="arrow" d="M500 716 V750"/>
+    <path class="arrow" d="M500 806 V840"/>
+
+    <!-- Возврат: решения C1–C11 назад к контракту -->
+    <path class="back" d="M270 508 H30 V328 H270"/>
+    <text class="lbl" x="44" y="420" text-anchor="middle" transform="rotate(-90 44 420)">решения C1–C11 → контракт 1.1</text>
+
+    <!-- Возврат: правки от сверки агентам реализации -->
+    <path class="back" d="M730 778 H992 V598 H940"/>
+    <text class="lbl" x="1006" y="690" text-anchor="middle" transform="rotate(90 1006 690)">правки → агентам реализации</text>
+
+    <!-- 1. Оркестратор -->
+    <rect x="270" y="20" width="460" height="56" rx="8" fill="var(--panel)" stroke="var(--orch)" stroke-width="2"/>
+    <text class="box-title" x="500" y="43" text-anchor="middle" fill="var(--orch)">1. Диалог с оркестратором</text>
+    <text class="box-sub" x="500" y="62" text-anchor="middle" fill="var(--text)">задачи проекта, фазы, правила (AGENTS.md)</text>
+
+    <!-- 2. Конституция -->
+    <rect x="270" y="110" width="460" height="56" rx="8" fill="var(--panel)" stroke="var(--orch)" stroke-width="2"/>
+    <text class="box-title" x="500" y="133" text-anchor="middle" fill="var(--orch)">2. Конституция</text>
+    <text class="box-sub" x="500" y="152" text-anchor="middle" fill="var(--text)">/speckit-constitution: v1.0, затем 1.0.1 (пути)</text>
+
+    <!-- 3a/3b. Сессии спецификаций -->
+    <rect x="60" y="200" width="380" height="64" rx="8" fill="var(--panel)" stroke="var(--session)" stroke-width="2"/>
+    <text class="box-title" x="250" y="224" text-anchor="middle" fill="var(--session)">Сессия UI: спецификация</text>
+    <text class="box-sub" x="250" y="244" text-anchor="middle" fill="var(--text)">/speckit-specify + /speckit-clarify → ui/spec.md</text>
+
+    <rect x="560" y="200" width="380" height="64" rx="8" fill="var(--panel)" stroke="var(--session)" stroke-width="2"/>
+    <text class="box-title" x="750" y="224" text-anchor="middle" fill="var(--session)">Сессия логики: спецификация</text>
+    <text class="box-sub" x="750" y="244" text-anchor="middle" fill="var(--text)">/speckit-specify + /speckit-clarify → logic/spec.md</text>
+
+    <!-- 4. Диалог и контракт -->
+    <rect x="270" y="300" width="460" height="56" rx="8" fill="var(--panel)" stroke="var(--human)" stroke-width="2"/>
+    <text class="box-title" x="500" y="323" text-anchor="middle" fill="var(--human)">3. Диалог и контракт</text>
+    <text class="box-sub" x="500" y="342" text-anchor="middle" fill="var(--text)">сверка спек, решения → contract.md v1.0 → v1.1</text>
+
+    <!-- 5a/5b. План и задачи -->
+    <rect x="60" y="390" width="380" height="64" rx="8" fill="var(--panel)" stroke="var(--session)" stroke-width="2"/>
+    <text class="box-title" x="250" y="414" text-anchor="middle" fill="var(--session)">Сессия UI: план и задачи</text>
+    <text class="box-sub" x="250" y="434" text-anchor="middle" fill="var(--text)">/speckit-plan + /speckit-tasks → ui/tasks.md</text>
+
+    <rect x="560" y="390" width="380" height="64" rx="8" fill="var(--panel)" stroke="var(--session)" stroke-width="2"/>
+    <text class="box-title" x="750" y="414" text-anchor="middle" fill="var(--session)">Сессия логики: план и задачи</text>
+    <text class="box-sub" x="750" y="434" text-anchor="middle" fill="var(--text)">/speckit-plan + /speckit-tasks → logic/tasks.md</text>
+
+    <!-- 6. Анализ -->
+    <rect x="270" y="480" width="460" height="56" rx="8" fill="var(--panel)" stroke="var(--check)" stroke-width="2"/>
+    <text class="box-title" x="500" y="503" text-anchor="middle" fill="var(--check)">4. Анализ</text>
+    <text class="box-sub" x="500" y="522" text-anchor="middle" fill="var(--text)">/speckit-analyze: 11 находок C1–C11</text>
+
+    <!-- 7a/7b. Реализация агентами -->
+    <rect x="60" y="570" width="380" height="64" rx="8" fill="var(--panel)" stroke="var(--agent)" stroke-width="2"/>
+    <text class="box-title" x="250" y="594" text-anchor="middle" fill="var(--agent)">Агент UI: реализация</text>
+    <text class="box-sub" x="250" y="614" text-anchor="middle" fill="var(--text)">/speckit-implement → static/ (28 задач)</text>
+
+    <rect x="560" y="570" width="380" height="64" rx="8" fill="var(--panel)" stroke="var(--agent)" stroke-width="2"/>
+    <text class="box-title" x="750" y="594" text-anchor="middle" fill="var(--agent)">Агент логики: реализация</text>
+    <text class="box-sub" x="750" y="614" text-anchor="middle" fill="var(--text)">/speckit-implement → server/ (38 задач)</text>
+
+    <!-- 8. Интеграция -->
+    <rect x="270" y="660" width="460" height="56" rx="8" fill="var(--panel)" stroke="var(--agent)" stroke-width="2"/>
+    <text class="box-title" x="500" y="683" text-anchor="middle" fill="var(--agent)">5. Интеграция</text>
+    <text class="box-sub" x="500" y="702" text-anchor="middle" fill="var(--text)">третий агент: curl по контракту, браузер, T028</text>
+
+    <!-- 9. Сверка -->
+    <rect x="270" y="750" width="460" height="56" rx="8" fill="var(--panel)" stroke="var(--check)" stroke-width="2"/>
+    <text class="box-title" x="500" y="773" text-anchor="middle" fill="var(--check)">6. Сверка</text>
+    <text class="box-sub" x="500" y="792" text-anchor="middle" fill="var(--text)">четвёртый агент: /speckit-converge по обеим папкам</text>
+
+    <!-- 10. Приёмка -->
+    <rect x="270" y="840" width="460" height="56" rx="8" fill="var(--panel)" stroke="var(--human)" stroke-width="2"/>
+    <text class="box-title" x="500" y="863" text-anchor="middle" fill="var(--human)">7. Приёмка человеком и коммит</text>
+    <text class="box-sub" x="500" y="882" text-anchor="middle" fill="var(--text)">коммит 3198601: код, спеки, задачи</text>
+  </svg>
+
+  <h2>Этапы и результаты</h2>
+  <table>
+    <thead><tr><th>Этап</th><th>Кто</th><th>Команда или инструмент</th><th>Результат</th></tr></thead>
+    <tbody>
+      <tr><td data-label="Этап">1. Задачи проекта</td><td data-label="Кто">оркестратор и человек</td><td data-label="Инструмент">диалог</td><td data-label="Результат">AGENTS.md: 4 операции, SQLite, границы объёма</td></tr>
+      <tr><td data-label="Этап">2. Конституция</td><td data-label="Кто">оркестратор</td><td data-label="Инструмент"><code>/speckit-constitution</code></td><td data-label="Результат">принципы I–V, стек, governance; версия 1.0, затем 1.0.1</td></tr>
+      <tr><td data-label="Этап">3. Спецификации UI и логики</td><td data-label="Кто">две отдельные сессии</td><td data-label="Инструмент"><code>/speckit-specify</code>, <code>/speckit-clarify</code></td><td data-label="Результат">ui/spec.md, logic/spec.md; ответы на вопросы человека</td></tr>
+      <tr><td data-label="Этап">4. Контракт</td><td data-label="Кто">оркестратор и человек</td><td data-label="Инструмент">диалог, сверка спек</td><td data-label="Результат">contract.md v1.0; после анализа v1.1 с решениями C1–C11</td></tr>
+      <tr><td data-label="Этап">5. План и задачи</td><td data-label="Кто">две сессии</td><td data-label="Инструмент"><code>/speckit-plan</code>, <code>/speckit-tasks</code></td><td data-label="Результат">plan.md и tasks.md по каждой роли; 28 задач UI, 38 задач логики</td></tr>
+      <tr><td data-label="Этап">6. Анализ</td><td data-label="Кто">оркестратор</td><td data-label="Инструмент"><code>/speckit-analyze</code></td><td data-label="Результат">11 находок: 1 критичная (раздача страницы), 2 высокие, остальные средние и низкие</td></tr>
+      <tr><td data-label="Этап">7. Реализация</td><td data-label="Кто">два агента параллельно</td><td data-label="Инструмент"><code>/speckit-implement</code></td><td data-label="Результат">static/ и server/; логика: 74 теста проходят</td></tr>
+      <tr><td data-label="Этап">8. Интеграция</td><td data-label="Кто">третий агент</td><td data-label="Инструмент">curl, Playwright</td><td data-label="Результат">один баг обрезки пробелов исправлен; контракт соблюдён</td></tr>
+      <tr><td data-label="Этап">9. Сверка</td><td data-label="Кто">четвёртый агент</td><td data-label="Инструмент"><code>/speckit-converge</code></td><td data-label="Результат">блокеров по коду нет; документные правки внесены</td></tr>
+      <tr><td data-label="Этап">10. Приёмка</td><td data-label="Кто">человек</td><td data-label="Инструмент">коммит</td><td data-label="Результат">3198601</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Как шла работа по согласованию с человеком</h2>
+  <ul>
+    <li>Каждый этап заканчивался остановкой: спецификации, контракт и код ждали решения человека.</li>
+    <li>Открытые вопросы решались по рекомендациям человека. Правило длины названия первоначально было «видимые символы», по рекомендации пересмотрено на кодовые точки Unicode, как в логике.</li>
+    <li>Расхождения между сессиями (раздача страницы, приоритеты, порядок проверок PATCH) закрыты в контракте 1.1, а не в коде.</li>
+  </ul>
+
+  <h2>Как запустить</h2>
+  <div class="panel">
+    <p>Из корня проекта: <code>python3 -m server.app</code>, затем открыть <code>http://127.0.0.1:8000</code>.</p>
+    <p>Тесты: <code>python3 -m unittest discover -s server/tests -t . -v</code>.</p>
+  </div>
+</main>
+</body>
+</html>
