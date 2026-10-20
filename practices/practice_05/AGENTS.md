@@ -19,6 +19,7 @@ If this file and `docs/requirements.md` disagree, follow `docs/requirements.md` 
 
 Do not create other pages, stylesheets, folders or build files.
 The backend lives only in `server/`; project tooling lives only in `docs/`, `scripts/`, `mcp/` and `.claude/`.
+OpenSpec planning (changes, main specs, `config.yaml`) lives only in `openspec/`.
 `docs/report.html` is the homework report, not a page of the site.
 
 ## Check
