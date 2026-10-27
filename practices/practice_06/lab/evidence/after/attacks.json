@@ -1,0 +1,118 @@
+{
+  "T02_sqli_search_noauth": {
+    "status": 403,
+    "body": "{\"error\": \"staff only\"}"
+  },
+  "T02_sqli_search_staff_literal": {
+    "status": 200,
+    "body": "[]"
+  },
+  "T01_sqli_profile_customer": {
+    "status": 400,
+    "body": "{\"error\": \"invalid id\"}"
+  },
+  "T04_idor_profile_noauth": {
+    "status": 401,
+    "body": "{\"error\": \"login required\"}"
+  },
+  "T04_idor_profile_customer_other": {
+    "status": 403,
+    "body": "{\"error\": \"forbidden\"}"
+  },
+  "T05_idor_files_noauth": {
+    "status": 401,
+    "body": "{\"error\": \"login required\"}"
+  },
+  "T05_idor_files_customer_other": {
+    "status": 200,
+    "body": "{\"content\": \"TEST_ALICE receipt: chair, 5000 RUB\"}"
+  },
+  "T06_files_traversal_customer": {
+    "status": 400,
+    "body": "{\"error\": \"invalid path\"}"
+  },
+  "T07_orders_noauth": {
+    "status": 401,
+    "body": "{\"error\": \"login required\"}"
+  },
+  "T07_orders_customer_scoped": {
+    "status": 200,
+    "body": "[{\"id\": 1, \"owner\": 1, \"product\": \"chair\", \"price\": 5000.0}, {\"id\": 3, \"owner\": 1, \"product\": \"chair\", \"price\": 5000.0}, {\"id\": 4, \"owner\": 1, \"product\": \"lamp\", \"price\": 1500.0}]"
+  },
+  "T08_price_tamper": {
+    "status": 201,
+    "body": "{\"id\": 5, \"owner\": 1, \"product\": \"chair\", \"price\": 5000}"
+  },
+  "T09_xrole_header_noauth": {
+    "status": 403,
+    "body": "{\"error\": \"staff only\"}"
+  },
+  "T09_xrole_customer": {
+    "status": 403,
+    "body": "{\"error\": \"staff only\"}"
+  },
+  "T10_debuglogs_noauth": {
+    "status": 403,
+    "body": "{\"error\": \"staff only\"}"
+  },
+  "T10_debuglogs_customer": {
+    "status": 403,
+    "body": "{\"error\": \"staff only\"}"
+  },
+  "T11_reviews_noauth": {
+    "status": 401,
+    "body": "{\"error\": \"login required\"}"
+  },
+  "T12_xss_view": {
+    "status": 200,
+    "body": "<html><body><p>&lt;script&gt;alert(1)&lt;/script&gt;</p><p>&lt;script&gt;alert(1)&lt;/script&gt;</p></body></html>"
+  },
+  "T15_execute_noauth": {
+    "status": 401,
+    "body": "{\"error\": \"login required\"}"
+  },
+  "T16_execute_other_receipt": {
+    "status": 403,
+    "body": "{\"error\": \"forbidden path\"}"
+  },
+  "T16_execute_private_note": {
+    "status": 403,
+    "body": "{\"error\": \"forbidden path\"}"
+  },
+  "T17_execute_export_customer": {
+    "status": 403,
+    "body": "{\"error\": \"forbidden\"}"
+  },
+  "T18_execute_delete_customer": {
+    "status": 403,
+    "body": "{\"error\": \"forbidden\"}"
+  },
+  "T18_execute_delete_staff": {
+    "status": 403,
+    "body": "{\"error\": \"forbidden\"}"
+  },
+  "T19_error_generic": {
+    "status": 500,
+    "body": "{\"error\": \"internal error\"}"
+  },
+  "OK_profile_own": {
+    "status": 200,
+    "body": "[{\"id\": 1, \"name\": \"TEST_ALICE\", \"email\": \"alice@example.invalid\", \"address\": \"TEST_ADDRESS_A\"}]"
+  },
+  "OK_execute_own_receipt": {
+    "status": 200,
+    "body": "{\"content\": \"TEST_ALICE receipt: chair, 5000 RUB\"}"
+  },
+  "OK_buy_catalog_price": {
+    "status": 201,
+    "body": "{\"id\": 6, \"owner\": 1, \"product\": \"lamp\", \"price\": 1500}"
+  },
+  "OK_staff_export": {
+    "status": 200,
+    "body": "[{\"id\": 1, \"name\": \"TEST_ALICE\", \"email\": \"alice@example.invalid\", \"address\": \"TEST_ADDRESS_A\"}, {\"id\": 2, \"name\": \"TEST_BOB\", \"email\": \"bob@example.invalid\", \"address\": \"TEST_ADDRESS_B\"}]"
+  },
+  "OK_review_escaped_contains_text": {
+    "status": 201,
+    "body": "{\"saved\": true}"
+  }
+}

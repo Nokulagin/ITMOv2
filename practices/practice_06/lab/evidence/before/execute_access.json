@@ -1,0 +1,38 @@
+{
+  "execute_read_bob_receipt_no_token": {
+    "status": 200,
+    "body": {
+      "content": "TEST_BOB receipt: lamp, 1500 RUB"
+    }
+  },
+  "execute_read_private_note_no_token": {
+    "status": 200,
+    "body": {
+      "content": "TEST_ONLY_OPERATOR_SECRET"
+    }
+  },
+  "execute_export_profiles_no_token": {
+    "status": 200,
+    "body": [
+      {
+        "id": 1,
+        "name": "TEST_ALICE",
+        "email": "alice@example.invalid",
+        "address": "TEST_ADDRESS_A"
+      },
+      {
+        "id": 2,
+        "name": "TEST_BOB",
+        "email": "bob@example.invalid",
+        "address": "TEST_ADDRESS_B"
+      }
+    ]
+  },
+  "files_private_note_no_auth": {
+    "status": 500,
+    "body": {
+      "error": "outside exercise sandbox",
+      "type": "ValueError"
+    }
+  }
+}
