@@ -234,6 +234,23 @@
     <li>Расхождения между сессиями (раздача страницы, приоритеты, порядок проверок PATCH) закрыты в контракте 1.1, а не в коде.</li>
   </ul>
 
+  <h2>OpenSpec и GitHub Spec Kit: в чём разница</h2>
+  <table>
+    <thead><tr><th>Вопрос</th><th>OpenSpec</th><th>GitHub Spec Kit</th><th>Что было в todo-list</th></tr></thead>
+    <tbody>
+      <tr><td data-label="Вопрос">Главная единица</td><td data-label="OpenSpec">изменение (change) к уже существующей системе</td><td data-label="Spec Kit">фича целиком, своя папка</td><td data-label="todo-list">Одна фича <code>001-todo-list</code>, проект новый, поэтому подошёл Spec Kit</td></tr>
+      <tr><td data-label="Вопрос">Правила проекта</td><td data-label="OpenSpec"><code>openspec/config.yaml</code>, правила по артефактам; попадают в будущие инструкции</td><td data-label="Spec Kit"><code>.specify/memory/constitution.md</code>, принципы MUST; analyze считает их нарушение критичным</td><td data-label="todo-list">Конституция 1.0.1: контракт как единственная правда, владение файлами, решения у человека</td></tr>
+      <tr><td data-label="Вопрос">Где спеки</td><td data-label="OpenSpec"><code>openspec/specs/&lt;область&gt;/spec.md</code>; дельты в <code>changes/</code></td><td data-label="Spec Kit">папка фичи: spec.md, plan.md, research.md, data-model.md, contracts/, quickstart.md, tasks.md рядом</td><td data-label="todo-list">Спеки по ролям в <code>ui/</code> и <code>logic/</code>; общий <code>contract.md</code> рядом</td></tr>
+      <tr><td data-label="Вопрос">Порядок работы</td><td data-label="OpenSpec">explore, propose, apply, archive</td><td data-label="Spec Kit">specify, clarify, plan, tasks, implement</td><td data-label="todo-list">Команды Spec Kit запускали сессии. План и задачи вручную не писали: ранний вариант откатили коммитом <code>32c2ea8</code></td></tr>
+      <tr><td data-label="Вопрос">Уточнение требований</td><td data-label="OpenSpec"><code>explore</code>: свободный разбор идеи перед предложением</td><td data-label="Spec Kit"><code>clarify</code>: целевые вопросы к спеке, ответы записываются в неё</td><td data-label="todo-list"><code>/speckit-clarify</code> вызывали для обеих спек; ответы человека вошли в спеки</td></tr>
+      <tr><td data-label="Вопрос">Проверка спек</td><td data-label="OpenSpec"><code>validate --strict</code>: проверка структуры</td><td data-label="Spec Kit"><code>analyze</code>: согласованность spec, plan и tasks, только чтение; <code>converge</code>: код против спеки</td><td data-label="todo-list"><code>analyze</code> нашёл C1 (критично): раздача страницы никому не назначена. <code>converge</code> подтвердил соответствие контракту 1.1</td></tr>
+      <tr><td data-label="Вопрос">Выполнение</td><td data-label="OpenSpec"><code>apply</code> по списку задач в <code>tasks.md</code></td><td data-label="Spec Kit"><code>implement</code> по <code>tasks.md</code>; <code>converge</code> дописывает недостающую работу в задачи</td><td data-label="todo-list">Два агента реализовали UI и логику параллельно (28 и 38 задач); сверка не нашла блокеров по коду</td></tr>
+      <tr><td data-label="Вопрос">Несколько спек одной фичи</td><td data-label="OpenSpec">разделение по областям спецификаций, через changes</td><td data-label="Spec Kit">переменная <code>SPECIFY_FEATURE_DIRECTORY</code> задаёт папку для сессии; команды одинаковы</td><td data-label="todo-list">Для каждой роли задавали свою папку; контракт 1.0, затем 1.1, расхождения закрывали в нём, а не в коде</td></tr>
+      <tr><td data-label="Вопрос">История</td><td data-label="OpenSpec">archive с датой в <code>changes/archive/</code></td><td data-label="Spec Kit">папка фичи и git-история</td><td data-label="todo-list">Коммиты <code>3198601</code> (код и спеки) и <code>518e2ce</code> (отчёт)</td></tr>
+      <tr><td data-label="Вопрос">Установка</td><td data-label="OpenSpec">npm-пакет <code>@fission-ai/openspec</code> 1.14.1 по версии курса; <code>openspec init --profile core</code></td><td data-label="Spec Kit">CLI <code>specify</code>; команды <code>/speckit-*</code> в агенте</td><td data-label="todo-list"><code>specify</code> уже был установлен</td></tr>
+    </tbody>
+  </table>
+
   <h2>Как запустить</h2>
   <div class="panel">
     <p>Из корня проекта: <code>python3 -m server.app</code>, затем открыть <code>http://127.0.0.1:8000</code>.</p>
