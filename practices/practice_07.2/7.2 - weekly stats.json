@@ -1,0 +1,583 @@
+{
+  "name": "7.2 - weekly stats",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * MON"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -496,
+        48
+      ],
+      "id": "41a7db3c-a4ac-4e49-b5ad-e2534d8615ca",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "repository",
+        "owner": {
+          "__rl": true,
+          "value": "Nokulagin",
+          "mode": "list",
+          "cachedResultName": "Nokulagin",
+          "cachedResultUrl": "https://github.com/Nokulagin"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "geolib7.2",
+          "mode": "list",
+          "cachedResultName": "geolib7.2",
+          "cachedResultUrl": "https://github.com/Nokulagin/geolib7.2"
+        },
+        "returnAll": true,
+        "getRepositoryIssuesFilters": {
+          "state": "open"
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -48,
+        -336
+      ],
+      "id": "d86062a6-0e5f-4cc4-9c72-828e7ecc9060",
+      "name": "Get All Opened Issues",
+      "webhookId": "deb3c7ce-d832-4d96-b093-80a5084b7a74",
+      "credentials": {
+        "githubApi": {
+          "id": "pKuzw3MkPacgSqk3",
+          "name": "GitHub account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "repository",
+        "owner": {
+          "__rl": true,
+          "value": "Nokulagin",
+          "mode": "list",
+          "cachedResultName": "Nokulagin",
+          "cachedResultUrl": "https://github.com/Nokulagin"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "geolib7.2",
+          "mode": "list",
+          "cachedResultName": "geolib7.2",
+          "cachedResultUrl": "https://github.com/Nokulagin/geolib7.2"
+        },
+        "returnAll": true,
+        "getRepositoryIssuesFilters": {
+          "state": "closed"
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -48,
+        -144
+      ],
+      "id": "e93c65b1-3123-4c7f-9779-80f5122d7e1a",
+      "name": "Get All Closed Issues",
+      "webhookId": "deb3c7ce-d832-4d96-b093-80a5084b7a74",
+      "credentials": {
+        "githubApi": {
+          "id": "pKuzw3MkPacgSqk3",
+          "name": "GitHub account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "repository",
+        "owner": {
+          "__rl": true,
+          "value": "Nokulagin",
+          "mode": "list",
+          "cachedResultName": "Nokulagin",
+          "cachedResultUrl": "https://github.com/Nokulagin"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "geolib7.2",
+          "mode": "list",
+          "cachedResultName": "geolib7.2",
+          "cachedResultUrl": "https://github.com/Nokulagin/geolib7.2"
+        },
+        "returnAll": true,
+        "getRepositoryIssuesFilters": {
+          "since": "={{ $json.PastWeek }}"
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -48,
+        48
+      ],
+      "id": "f629be4e-3ae0-4cb5-9712-810fb49ac2bc",
+      "name": "Get All Updated In A Week",
+      "webhookId": "deb3c7ce-d832-4d96-b093-80a5084b7a74",
+      "credentials": {
+        "githubApi": {
+          "id": "pKuzw3MkPacgSqk3",
+          "name": "GitHub account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "subtractFromDate",
+        "magnitude": "={{ $json.Year }}{{ $json.Month }}{{ $json['Day of month'] }}",
+        "duration": 7,
+        "outputFieldName": "PastWeek",
+        "options": {
+          "includeInputFields": true
+        }
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -272,
+        48
+      ],
+      "id": "41ac0ca1-a10b-4218-afd3-8d0959d807df",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "resource": "repository",
+        "owner": {
+          "__rl": true,
+          "value": "Nokulagin",
+          "mode": "list",
+          "cachedResultName": "Nokulagin",
+          "cachedResultUrl": "https://github.com/Nokulagin"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "geolib7.2",
+          "mode": "list",
+          "cachedResultName": "geolib7.2",
+          "cachedResultUrl": "https://github.com/Nokulagin/geolib7.2"
+        },
+        "returnAll": true,
+        "getRepositoryIssuesFilters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -48,
+        240
+      ],
+      "id": "801aeb42-768d-42f9-830f-8197c0977ae1",
+      "name": "Get All Issues",
+      "webhookId": "deb3c7ce-d832-4d96-b093-80a5084b7a74",
+      "credentials": {
+        "githubApi": {
+          "id": "pKuzw3MkPacgSqk3",
+          "name": "GitHub account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Получаем данные из предыдущих нод\n// Замените 'Calculate Statistics' на имя вашей ноды со статистикой\nconst statsNode = $('Calculate Statistics').first().json; \nconst summary = statsNode.summary;\nconst delta = statsNode.delta;\nconst groupedData = statsNode.groupedData;\n\n// Замените 'OpenAI' на имя вашей ноды с нейросетью\nlet aiComment = \"Комментарий от AI временно недоступен.\";\ntry {\n  aiComment = $input.first().json.text;\n} catch (e) {\n  // Если нода OpenAI упала, письмо все равно отправится\n  console.log(\"Ошибка получения данных от Ai\");\n}\n\n// 2. Вспомогательная функция для красивого отображения дельты\nfunction formatDelta(val, inverse = false) {\n  if (val === 0) return `<span style=\"color: #666;\">0</span>`;\n  const isPositive = val > 0;\n  // Если inverse = true (например, для багов), то рост — это плохо (красный)\n  const color = (isPositive !== inverse) ? '#28a745' : '#d73a49'; \n  const sign = isPositive ? '+' : '';\n  return `<span style=\"color: ${color}; font-weight: bold;\">${sign}${val}</span>`;\n}\n\n// 3. Формируем блок со статистикой\nlet summaryHtml = `\n  <div style=\"margin-bottom: 20px; padding: 15px; background-color: #f6f8fa; border-radius: 6px; border: 1px solid #e1e4e8;\">\n    <h3 style=\"margin-top: 0; color: #24292e;\">📈 Краткие итоги</h3>\n    <table style=\"width: 100%; text-align: left; font-size: 14px;\">\n      <tr>\n        <td style=\"padding: 4px 0;\"><b>Всего задач:</b> ${summary.total} (${formatDelta(delta.total)})</td>\n        <td style=\"padding: 4px 0;\"><b>Открыто:</b> ${summary.open} (${formatDelta(delta.open)})</td>\n      </tr>\n      <tr>\n        <td style=\"padding: 4px 0;\"><b>Закрыто:</b> ${summary.closed} (${formatDelta(delta.closed)})</td>\n        <td style=\"padding: 4px 0;\"><b>Баги:</b> ${summary.bugs} (${formatDelta(delta.bugs, true)})</td>\n      </tr>\n    </table>\n    <p style=\"margin-bottom: 0; font-size: 14px; margin-top: 10px;\">\n      🏆 <b>Самый активный автор:</b> @${summary.top_author}\n    </p>\n  </div>\n`;\n\n// 4. Формируем блок для AI-комментария\nlet aiHtml = `\n  <div style=\"margin-bottom: 25px; padding: 15px; background-color: #f1f8ff; border-left: 4px solid #0366d6; border-radius: 4px;\">\n    <h3 style=\"margin-top: 0; color: #0366d6; font-size: 16px;\">🤖 AI-комментарий недели</h3>\n    <p style=\"margin-bottom: 0; font-size: 14px; line-height: 1.5; color: #24292e; font-style: italic;\">\n      \"${aiComment}\"\n    </p>\n  </div>\n`;\n\n// 5. Формируем HTML-таблицу\nlet tableHtml = `\n  <h3 style=\"color: #24292e;\">📋 Детализация по задачам</h3>\n  <table style=\"width: 100%; border-collapse: collapse; font-size: 13px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;\">\n    <thead>\n      <tr style=\"background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8; text-align: left;\">\n        <th style=\"padding: 10px; border: 1px solid #dfe2e5;\">Тип</th>\n        <th style=\"padding: 10px; border: 1px solid #dfe2e5;\">Автор</th>\n        <th style=\"padding: 10px; border: 1px solid #dfe2e5;\">Задача</th>\n        <th style=\"padding: 10px; border: 1px solid #dfe2e5;\">Статус</th>\n      </tr>\n    </thead>\n    <tbody>\n`;\n\nlet rowCount = 0;\n// Проходимся по сгруппированным данным\nfor (const type in groupedData) {\n  for (const author in groupedData[type]) {\n    const issues = groupedData[type][author];\n    \n    issues.forEach((issue, index) => {\n      // Чередование цветов строк (зебра)\n      const bgColor = rowCount % 2 === 0 ? '#ffffff' : '#f9f9f9';\n      \n      // Чтобы не дублировать Тип и Автора в каждой строке (визуальная группировка)\n      const typeCell = index === 0 \n        ? `<td style=\"padding: 10px; border: 1px solid #dfe2e5; background-color: ${bgColor};\"><b>${type}</b></td>` \n        : `<td style=\"padding: 10px; border: 1px solid #dfe2e5; background-color: ${bgColor};\"></td>`;\n        \n      const authorCell = index === 0 \n        ? `<td style=\"padding: 10px; border: 1px solid #dfe2e5; background-color: ${bgColor};\">@${author}</td>` \n        : `<td style=\"padding: 10px; border: 1px solid #dfe2e5; background-color: ${bgColor};\"></td>`;\n\n      // Статус с эмодзи и цветом\n      const statusBadge = issue.state === 'open' \n        ? '<span style=\"color: #d73a49; font-weight: bold;\">🔴 Open</span>' \n        : '<span style=\"color: #28a745; font-weight: bold;\">🟢 Closed</span>';\n\n      tableHtml += `\n        <tr>\n          ${typeCell}\n          ${authorCell}\n          <td style=\"padding: 10px; border: 1px solid #dfe2e5; background-color: ${bgColor};\">\n            <a href=\"${issue.url}\" style=\"color: #0366d6; text-decoration: none;\">#${issue.number} ${issue.title}</a>\n          </td>\n          <td style=\"padding: 10px; border: 1px solid #dfe2e5; background-color: ${bgColor};\">\n            ${statusBadge}\n          </td>\n        </tr>\n      `;\n      rowCount++;\n    });\n  }\n}\n\ntableHtml += `\n    </tbody>\n  </table>\n`;\n\n// 6. Собираем все вместе в финальное письмо\nconst finalHtml = `\n  <div style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; max-width: 800px; margin: 0 auto; color: #24292e;\">\n    \n    ${summaryHtml}\n    ${aiHtml}\n    ${tableHtml}\n    \n    <p style=\"font-size: 12px; color: #6a737d; text-align: center; margin-top: 30px;\">\n      Автоматически сгенерировано в n8n • ${new Date().toLocaleDateString('ru-RU')}\n    </p>\n  </div>\n`;\n\n// Возвращаем результат для отправки\nreturn [{\n  json: {\n    htmlContent: finalHtml,\n    plainTextFallback: \"Ваш почтовый клиент не поддерживает HTML. Пожалуйста, используйте современный клиент.\" // На всякий случай\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        192
+      ],
+      "id": "dd8d1b94-6ea4-49a6-a4f1-fa39dac03541",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "numberInputs": 5
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        176,
+        0
+      ],
+      "id": "cd4ede19-cbb2-41fa-a04a-b2fc27ea2835",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "fromEmail": "nokulagin_n8n@mail.com",
+        "toEmail": "nikita.o.kulagin@gmail.com",
+        "subject": "📊 Еженедельный отчет по GitHub Issues",
+        "html": "={{ $json.htmlContent }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1200,
+        192
+      ],
+      "id": "30a20a80-0c06-4c83-9358-45c86653898a",
+      "name": "Send an Email",
+      "webhookId": "58f3153d-2456-4669-a05f-5f0639573011",
+      "credentials": {
+        "smtp": {
+          "id": "lDpGI9O2AUHvGrd3",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "nvJjbLZIo4uMNo87",
+          "mode": "list",
+          "cachedResultName": "PastWeekIssues",
+          "cachedResultUrl": "/projects/HF4csBPLpkLsem8g/datatables/nvJjbLZIo4uMNo87"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "createdAt",
+              "condition": "lte",
+              "keyValue": "={{ $json.PastWeek }}"
+            }
+          ]
+        },
+        "limit": 1,
+        "orderBy": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -48,
+        432
+      ],
+      "id": "0aba3a37-5e97-4585-8132-c40744f2277e",
+      "name": "Get row(s)"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        704,
+        432
+      ],
+      "id": "d7014433-4ba1-4978-b217-e6a3567f9186",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "WzlYEKLymtQbf4oH",
+          "name": "OpenAI account 6"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "nvJjbLZIo4uMNo87",
+          "mode": "list",
+          "cachedResultName": "PastWeekIssues",
+          "cachedResultUrl": "/projects/HF4csBPLpkLsem8g/datatables/nvJjbLZIo4uMNo87"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Bugs": "={{ $json.summary.bugs }}",
+            "TotalIssues": "={{ $json.summary.total }}",
+            "OpenedIssues": "={{ $json.summary.open }}",
+            "ClosedIssues": "={{ $json.summary.closed }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Bugs",
+              "displayName": "Bugs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "TotalIssues",
+              "displayName": "TotalIssues",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "OpenedIssues",
+              "displayName": "OpenedIssues",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ClosedIssues",
+              "displayName": "ClosedIssues",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        688,
+        -96
+      ],
+      "id": "77a0d2fe-3cc9-4493-9b23-330543e5f6e7",
+      "name": "Insert row"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allItems = $input.all();\nconst uniqueIssues = {};\n\n// Безопасно достаем данные за прошлую неделю. \n// Если база пуста (первый запуск), подставится 0\nconst prevNode = $('Get row(s)').first();\nconst prevStats = { \n  total: prevNode?.json?.TotalIssues ?? 0, \n  open: prevNode?.json?.OpenedIssues ?? 0, \n  closed: prevNode?.json?.ClosedIssues ?? 0, \n  bugs: prevNode?.json?.Bugs ?? 0 \n};\n\n// 1. РАЗДЕЛЯЕМ ДАННЫЕ\nfor (const item of allItems) {\n  const data = item.json;\n\n  // Если это задача из GitHub И ЭТО НЕ PULL REQUEST (!data.pull_request)\n  if (data.html_url && !data.pull_request) {\n    // Дедупликация с приоритетом статуса \"closed\"\n    if (!uniqueIssues[data.id] || String(data.state).toLowerCase() === 'closed') {\n      uniqueIssues[data.id] = data;\n    }\n  } \n}\n\n// 2. СЧИТАЕМ СТАТИСТИКУ\nconst groupedData = {};\nlet currentOpen = 0;\nlet currentClosed = 0;\nlet currentBugs = 0;\nconst authorCounts = {};\n\nfor (const id in uniqueIssues) {\n  const issue = uniqueIssues[id];\n  \n  // Приводим к строке и нижнему регистру\n  const state = String(issue.state || '').toLowerCase(); \n\n  if (state === 'open') currentOpen++;\n  if (state === 'closed') currentClosed++;\n\n  let type = 'Other';\n  if (issue.labels && issue.labels.length > 0) {\n    type = typeof issue.labels[0] === 'string' ? issue.labels[0] : issue.labels[0].name;\n    if (type.toLowerCase().includes('bug')) currentBugs++;\n  }\n\n  const author = issue.user ? issue.user.login : 'Unknown';\n  authorCounts[author] = (authorCounts[author] || 0) + 1;\n\n  if (!groupedData[type]) groupedData[type] = {};\n  if (!groupedData[type][author]) groupedData[type][author] = [];\n\n  groupedData[type][author].push({\n    number: issue.number,\n    title: issue.title,\n    url: issue.html_url,\n    state: state,\n    date: new Date(issue.created_at).toLocaleDateString('ru-RU')\n  });\n}\n\nconst currentTotal = Object.keys(uniqueIssues).length;\n\n// Ищем самого активного автора\nlet topAuthor = 'None';\nlet maxIssues = 0;\nfor (const author in authorCounts) {\n  if (authorCounts[author] > maxIssues) {\n    maxIssues = authorCounts[author];\n    topAuthor = author;\n  }\n}\n\n// 3. СЧИТАЕМ ДЕЛЬТУ\nconst delta = {\n  total: currentTotal - prevStats.total,\n  open: currentOpen - prevStats.open,\n  closed: currentClosed - prevStats.closed,\n  bugs: currentBugs - prevStats.bugs\n};\n\n// 4. ВОЗВРАЩАЕМ ЧИСТЫЙ РЕЗУЛЬТАТ\nreturn [{\n  json: {\n    summary: {\n      total: currentTotal,\n      open: currentOpen,\n      closed: currentClosed,\n      bugs: currentBugs,\n      top_author: topAuthor\n    },\n    delta: delta,\n    groupedData: groupedData\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        48
+      ],
+      "id": "216b27c9-c4ee-4503-b801-30ead8bd2032",
+      "name": "Calculate Statistics"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Ты — опытный техлид и проект-менеджер. Твоя задача — написать краткий, емкий и профессиональный комментарий (дайджест) к еженедельному отчету по GitHub Issues.\n\nВот данные за текущую неделю:\n- Всего задач в репозитории: {{ $json.summary.total }}\n- Открыто: {{ $json.summary.open }}\n- Закрыто: {{ $json.summary.closed }}\n- Багов: {{ $json.summary.bugs }}\n- Самый активный автор: @{{ $json.summary.top_author }}\n\nА вот динамика (разница) по сравнению с прошлой неделей (если число положительное — показатель вырос, если отрицательное — упал):\n- Изменение общего количества задач: {{ $json.delta.total }}\n- Изменение количества открытых задач: {{ $json.delta.open }}\n- Изменение количества закрытых задач: {{ $json.delta.closed }}\n- Изменение количества багов: {{ $json.delta.bugs }}\n\nНапиши блок для письма под названием \"AI-комментарий недели\". \nПравила:\n1. Пиши от 2 до 4 предложений. Не используй воду.\n2. Если закрытых задач стало больше (delta.closed > 0) — похвали команду за продуктивность.\n3. Если багов стало больше (delta.bugs > 0) — обрати на это внимание и посоветуй выделить время на рефакторинг.\n4. Если общее количество задач выросло (delta.total > 0) — отметь, что бэклог растет.\n5. Используй уместные эмодзи для структуры (например, 🚀, ⚠️, 📉, 👍, 🐞).\n6. Выведи только готовый текст комментария, без приветствий вроде \"Вот ваш текст:\".\n7. Не выводи сам список статистики. Твоя задача лишь дать комментарий к нему",
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        624,
+        192
+      ],
+      "id": "2f4ccbe7-9efc-40ef-be75-fcfdf9b46523",
+      "name": "Ai review"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "Get All Opened Issues",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get All Closed Issues",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get All Updated In A Week",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get All Issues",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Updated In A Week": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Get All Issues": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Get All Closed Issues": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get All Opened Issues": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Calculate Statistics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Ai review",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row": {
+      "main": [
+        []
+      ]
+    },
+    "Calculate Statistics": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ai review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ai review": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "1e119c17-7346-4ee7-a33f-4244c478f1f9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "68dbbb4e8fa686c3fd4e9982ade6836edb66976f207553e7ac22df961581c78c"
+  },
+  "nodeGroups": [],
+  "id": "XB3oP3t3MzDIpJWa",
+  "tags": []
+}
