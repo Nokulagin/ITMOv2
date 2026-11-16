@@ -1,0 +1,450 @@
+{
+  "name": "7.2 - labeling",
+  "nodes": [
+    {
+      "parameters": {
+        "owner": {
+          "__rl": true,
+          "value": "Nokulagin",
+          "mode": "list",
+          "cachedResultName": "Nokulagin",
+          "cachedResultUrl": "https://github.com/Nokulagin"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "geolib7.2",
+          "mode": "list",
+          "cachedResultName": "geolib7.2",
+          "cachedResultUrl": "https://github.com/Nokulagin/geolib7.2"
+        },
+        "events": [
+          "issues"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.githubTrigger",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        16
+      ],
+      "id": "7f46e1e5-d3be-489e-8ce7-655357603806",
+      "name": "Github Trigger",
+      "webhookId": "f7baa83d-ab0c-4fc0-bd68-57464ae238d1",
+      "credentials": {
+        "githubApi": {
+          "id": "pKuzw3MkPacgSqk3",
+          "name": "GitHub account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "1ca22a90-7e4e-4047-a599-154537bc34f7",
+              "leftValue": "={{ $json.body.action }}",
+              "rightValue": "opened",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        16,
+        32
+      ],
+      "id": "69161598-d302-4fba-9be4-216a59dc09e1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b2fc6699-c09d-4a2e-804e-106614bba38e",
+              "name": "issue_title",
+              "value": "={{ $json.body.issue.title }}",
+              "type": "string"
+            },
+            {
+              "id": "2bef249f-64c7-4c47-8f08-d1f39c9b2be8",
+              "name": "issue_desc",
+              "value": "={{ $json.body.issue.body }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        720,
+        -64
+      ],
+      "id": "a94fbab5-0012-435b-b8be-8e1eed39c26c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "2e972037-400b-4dd7-9d08-7853eba7abe9",
+              "leftValue": "={{ $json.body.issue.author_association }}",
+              "rightValue": "NONE",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        256,
+        16
+      ],
+      "id": "cf544a8e-4edb-4379-a27c-5c557e776f24",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "createComment",
+        "owner": {
+          "__rl": true,
+          "value": "Nokulagin",
+          "mode": "list",
+          "cachedResultName": "Nokulagin",
+          "cachedResultUrl": "https://github.com/Nokulagin"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "geolib7.2",
+          "mode": "list",
+          "cachedResultName": "geolib7.2",
+          "cachedResultUrl": "https://github.com/Nokulagin/geolib7.2"
+        },
+        "issueNumber": "={{ $('Github Trigger').item.json.body.issue.number }}",
+        "body": "=Привет, {{ $('Github Trigger').item.json.body.issue.user.login }}! Спасибо за первое обращение. Перед началом работы загляни в CONTRIBUTING.md: там собраны правила участия в проекте."
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        432,
+        -160
+      ],
+      "id": "abaf2459-b26e-48b7-952c-765724d80acd",
+      "name": "Create a comment on an issue",
+      "webhookId": "69ca4b8b-ac0d-4242-9cf7-cd5eab76fda4",
+      "credentials": {
+        "githubApi": {
+          "id": "pKuzw3MkPacgSqk3",
+          "name": "GitHub account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "N7wdcD1BMVIUuauq",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/N7wdcD1BMVIUuauq",
+          "cachedResultName": "My workflow 35"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "issue_title": "={{ $json.issue_title }}",
+            "issue_desc": "={{ $json.issue_desc }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "issue_title",
+              "displayName": "issue_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "issue_desc",
+              "displayName": "issue_desc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.4,
+      "position": [
+        912,
+        -96
+      ],
+      "id": "a9bb8ddd-34d3-4e11-a764-3817d649c891",
+      "name": "Call 'My workflow 35'"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "15811522-00f9-4608-86f0-9dbab584c06a",
+              "leftValue": "={{ $json.output.type }}",
+              "rightValue": "unknown",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        1136,
+        -96
+      ],
+      "id": "e398cf4a-6f80-45c0-8789-a994d6f2482a",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "Nokulagin",
+          "mode": "list",
+          "cachedResultName": "Nokulagin",
+          "cachedResultUrl": "https://github.com/Nokulagin"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "geolib7.2",
+          "mode": "list",
+          "cachedResultName": "geolib7.2",
+          "cachedResultUrl": "https://github.com/Nokulagin/geolib7.2"
+        },
+        "issueNumber": "={{ $('If').item.json.body.issue.number }}",
+        "editFields": {
+          "labels": [
+            {
+              "label": "needs-triage"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1360,
+        -192
+      ],
+      "id": "8c2d21b0-664d-4257-bbe8-d6b2a47d6a9e",
+      "name": "Edit an issue",
+      "webhookId": "6dc64f7d-0864-43be-a218-88a385a1f899",
+      "credentials": {
+        "githubApi": {
+          "id": "pKuzw3MkPacgSqk3",
+          "name": "GitHub account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "Nokulagin",
+          "mode": "list",
+          "cachedResultName": "Nokulagin",
+          "cachedResultUrl": "https://github.com/Nokulagin"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "geolib7.2",
+          "mode": "list",
+          "cachedResultName": "geolib7.2",
+          "cachedResultUrl": "https://github.com/Nokulagin/geolib7.2"
+        },
+        "issueNumber": "={{ $('If1').item.json.body.issue.number }}",
+        "editFields": {
+          "labels": [
+            {
+              "label": "={{ $json.output.type }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1360,
+        -48
+      ],
+      "id": "fb28ae19-1b62-414a-b66d-81b5e06c5855",
+      "name": "Edit an issue1",
+      "webhookId": "6dc64f7d-0864-43be-a218-88a385a1f899",
+      "credentials": {
+        "githubApi": {
+          "id": "pKuzw3MkPacgSqk3",
+          "name": "GitHub account 5"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Github Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Call 'My workflow 35'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Create a comment on an issue",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a comment on an issue": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'My workflow 35'": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Edit an issue",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit an issue1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "5c9cd70a-b750-4b0b-8c9e-d66f0c54bde5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "68dbbb4e8fa686c3fd4e9982ade6836edb66976f207553e7ac22df961581c78c"
+  },
+  "nodeGroups": [],
+  "id": "N26G2b4ZqqsxEJ0r",
+  "tags": []
+}
