@@ -1,0 +1,775 @@
+{
+  "name": "7.1",
+  "nodes": [
+    {
+      "parameters": {
+        "owner": {
+          "__rl": true,
+          "value": "Nokulagin",
+          "mode": "list",
+          "cachedResultName": "Nokulagin",
+          "cachedResultUrl": "https://github.com/Nokulagin"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "test",
+          "mode": "list",
+          "cachedResultName": "test",
+          "cachedResultUrl": "https://github.com/Nokulagin/test"
+        },
+        "events": [
+          "issue_comment"
+        ],
+        "options": {}
+      },
+      "id": "ecd7317b-891c-4d57-86e6-bd0b594b0056",
+      "name": "PR Trigger1",
+      "type": "n8n-nodes-base.githubTrigger",
+      "position": [
+        -496,
+        -224
+      ],
+      "webhookId": "c6a30e53-bda5-4922-87f3-8cdfb399a35f",
+      "notesInFlow": false,
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "pKuzw3MkPacgSqk3",
+          "name": "GitHub account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "Nokulagin",
+          "mode": "list",
+          "cachedResultName": "Nokulagin",
+          "cachedResultUrl": "https://github.com/Nokulagin"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "test",
+          "mode": "list",
+          "cachedResultName": "test",
+          "cachedResultUrl": "https://github.com/Nokulagin/test"
+        },
+        "issueNumber": "={{ $('Switch').item.json.number }}",
+        "editFields": {
+          "labels": [
+            {
+              "label": "ReviewedByAI"
+            }
+          ]
+        }
+      },
+      "id": "1c9919eb-e7a6-451e-8e95-50b6bb1950c4",
+      "name": "Add Label to PR1",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        1648,
+        -128
+      ],
+      "webhookId": "70d2db56-965b-4f1f-817c-1fbb311320c0",
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "pKuzw3MkPacgSqk3",
+          "name": "GitHub account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a senior Python developer.\n\nСделай code review ТОЛЬКО изменённых строк в diff.\nНайди:\n• баги\n• проблемы безопасности\n• регрессии\n• проблемы производительности\n• нарушения best practices\n\nДай конкретные рекомендации и примеры исправлений.\n\nВАЖНО: Твой ответ должен быть СТРОГО валидным JSON-объектом, соответствующим приведенной ниже схеме. \nНе добавляй никакого текста до или после JSON. Не оборачивай ответ в markdown-теги ```json ... ```. Выводи только чистый JSON.\n\nПравила для заполнения полей:\n1. \"summary\": Общий вывод по изменениям (на русском языке, Markdown разрешен).\n2. \"comments\": Массив найденных проблем. Каждый объект должен содержать:\n   - \"path\": Точный путь к файлу (например, \"src/main.py\"), как он указан в diff (бери из строк +++ b/path/to/file).\n   - \"line\": Абсолютный номер строки в файле. Вычисляй его на основе заголовков ханков @@ -old_start,old_count +new_start,new_count @@. \n   - \"side\": \"RIGHT\" для новых/добавленных строк (начинаются с +), \"LEFT\" для удаленных строк (начинаются с -). Для контекста обычно используется \"RIGHT\".\n   - \"body\": Текст комментария с объяснением проблемы и примером исправления (на русском языке).\n\nОбязательно проверь, что \"line\" для \"side\": \"RIGHT\" соответствует реальному номеру строки в НОВОМ файле, а для \"side\": \"LEFT\" — в СТАРОМ файле, и что эта строка присутствует в diff.\n\nСХЕМА JSON:\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"summary\": {\n      \"type\": \"string\",\n      \"description\": \"Overall review body rendered above the inline comments. Markdown allowed.\"\n    },\n    \"comments\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"path\": {\n            \"type\": \"string\",\n            \"description\": \"Repository-relative file path exactly as it appears in the PR files list.\"\n          },\n          \"line\": {\n            \"type\": \"integer\",\n            \"description\": \"Absolute line number in the file (new version for RIGHT, old version for LEFT).\"\n          },\n          \"side\": {\n            \"type\": \"string\",\n            \"enum\": [\"RIGHT\", \"LEFT\"],\n            \"description\": \"RIGHT = new file (added lines). LEFT = old file (deleted lines).\"\n          },\n          \"start_line\": {\n            \"type\": \"integer\",\n            \"description\": \"Optional. First line of a multi-line comment.\"\n          },\n          \"start_side\": {\n            \"type\": \"string\",\n            \"enum\": [\"RIGHT\", \"LEFT\"],\n            \"description\": \"Optional. Required when start_line is present.\"\n          },\n          \"body\": {\n            \"type\": \"string\",\n            \"description\": \"Comment text in Markdown. Be specific and actionable.\"\n          }\n        },\n        \"required\": [\"path\", \"line\", \"side\", \"body\"]\n      }\n    }\n  },\n  \"required\": [\"summary\", \"comments\"]\n}\n\nДанные для анализа (diff):\n{{ $json.data }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": ""
+        }
+      },
+      "id": "85d9605f-e5c9-41d7-a8fb-c90b6c86174a",
+      "name": "Code Review Agent1",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1072,
+        -128
+      ],
+      "typeVersion": 1.9
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "a2fbcb70-db02-4f75-b972-4e29ec2b8d6d",
+              "leftValue": "={{ $json.body.issue.pull_request }}",
+              "rightValue": "opened",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        -272,
+        -224
+      ],
+      "id": "e5648fed-82ae-4635-abf1-ed52dbf8e21c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body }}",
+                    "rightValue": "/make_ai_review",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "88c5c454-a4e3-48c2-9d20-11b1657eb640"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "claude"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "ede9cb66-e733-46d7-ab55-12365ae683e2",
+                    "leftValue": "={{ $json.body }}",
+                    "rightValue": "/make_other_ai_review",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "gpt"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "none"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.5,
+      "position": [
+        176,
+        -128
+      ],
+      "id": "1dcc4bf8-8d26-4e16-81d3-0fd02715ca02",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9018037f-aa0c-4edb-a809-c49cafbb5d27",
+              "name": "model",
+              "value": "anthropic/claude-haiku-5.5",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        400,
+        -224
+      ],
+      "id": "6c752513-c39d-4da4-8bd1-f4c16d657c68",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9018037f-aa0c-4edb-a809-c49cafbb5d27",
+              "name": "model",
+              "value": "openai/gpt-5-mini",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        400,
+        -32
+      ],
+      "id": "2e6fd108-66ca-4b2c-b870-e4beb8579d3a",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.github.com/repos/{{ $('Switch').item.json.full_name }}/pulls/{{ $('Switch').item.json.number }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3.diff"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7836064e-91cb-4160-91f6-eaef32fd4f0c",
+      "name": "Get file's PR info",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        848,
+        -128
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "47CoEvsllGvg7T4H",
+          "name": "Bearer Auth account 7"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "8KomYzXQtSD55Cce",
+          "mode": "list",
+          "cachedResultName": "PastReviews",
+          "cachedResultUrl": "/projects/HF4csBPLpkLsem8g/datatables/8KomYzXQtSD55Cce"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "PR_id": "={{ $json.number }}",
+            "By": "={{ $('If row does not exist').item.json.model }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "PR_id",
+              "displayName": "PR_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "By",
+              "displayName": "By",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1872,
+        -128
+      ],
+      "id": "53b998c5-71d0-4409-a087-7bb20312c12b",
+      "name": "Insert row"
+    },
+    {
+      "parameters": {
+        "operation": "rowNotExists",
+        "dataTableId": {
+          "__rl": true,
+          "value": "8KomYzXQtSD55Cce",
+          "mode": "list",
+          "cachedResultName": "PastReviews",
+          "cachedResultUrl": "/projects/HF4csBPLpkLsem8g/datatables/8KomYzXQtSD55Cce"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "PR_id",
+              "keyValue": "={{ $('Switch').item.json.number }}"
+            },
+            {
+              "keyName": "By",
+              "keyValue": "={{ $json.model }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        624,
+        -128
+      ],
+      "id": "f6f74b1e-cf34-4a25-a76f-2825f370501b",
+      "name": "If row does not exist"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.github.com/repos/{{ $('Switch').item.json.full_name }}/pulls/{{ $('Switch').item.json.number }}/reviews",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"event\": \"COMMENT\",\n  \"body\": {{ JSON.stringify($json.output.summary) }},\n  \"comments\": {{ JSON.stringify($json.output.comments) }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1424,
+        -128
+      ],
+      "id": "1e4b8711-7918-4b90-ada7-0d595014ae09",
+      "name": "HTTP Request",
+      "credentials": {
+        "githubApi": {
+          "id": "pKuzw3MkPacgSqk3",
+          "name": "GitHub account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"$id\": \"https://example.com/schemas/pr-review.json\",\n  \"title\": \"PRReview\",\n  \"description\": \"Structured code review output. Each comment is anchored to a specific line of a file in the PR diff.\",\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"required\": [\"summary\", \"comments\"],\n  \"properties\": {\n    \"summary\": {\n      \"type\": \"string\",\n      \"description\": \"Overall review body rendered above the inline comments. Markdown allowed.\",\n      \"minLength\": 1,\n      \"maxLength\": 65536\n    },\n    \"comments\": {\n      \"type\": \"array\",\n      \"description\": \"Inline comments, one per issue found.\",\n      \"minItems\": 0,\n      \"maxItems\": 50,\n      \"items\": { \"$ref\": \"#/$defs/LineComment\" }\n    }\n  },\n  \"$defs\": {\n    \"LineComment\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\"path\", \"line\", \"side\", \"body\"],\n      \"properties\": {\n        \"path\": {\n          \"type\": \"string\",\n          \"description\": \"Repository-relative file path exactly as it appears in the PR files list, e.g. 'src/app/main.ts'. No leading slash.\",\n          \"minLength\": 1,\n          \"pattern\": \"^[^/\\\\\\\\].*[^/\\\\\\\\]$|^[^/\\\\\\\\]$\"\n        },\n        \"line\": {\n          \"type\": \"integer\",\n          \"description\": \"Absolute line number in the file (new version for RIGHT, old version for LEFT). Must fall inside a hunk shown in the diff.\",\n          \"minimum\": 1\n        },\n        \"side\": {\n          \"type\": \"string\",\n          \"description\": \"RIGHT = new file (added or context lines). LEFT = old file (deleted lines).\",\n          \"enum\": [\"RIGHT\", \"LEFT\"]\n        },\n        \"start_line\": {\n          \"type\": \"integer\",\n          \"description\": \"First line of a multi-line comment. Must be less than 'line'. Omit for single-line comments.\",\n          \"minimum\": 1\n        },\n        \"start_side\": {\n          \"type\": \"string\",\n          \"description\": \"Required when start_line is present. Usually equal to 'side'.\",\n          \"enum\": [\"RIGHT\", \"LEFT\"]\n        },\n        \"body\": {\n          \"type\": \"string\",\n          \"description\": \"Comment text in Markdown. Be specific and actionable.\",\n          \"minLength\": 1,\n          \"maxLength\": 65536\n        }\n      },\n      \"allOf\": [\n        {\n          \"if\": { \"required\": [\"start_line\"] },\n          \"then\": { \"required\": [\"start_side\"] }\n        },\n        {\n          \"if\": { \"required\": [\"start_side\"] },\n          \"then\": { \"required\": [\"start_line\"] }\n        }\n      ]\n    }\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1216,
+        112
+      ],
+      "id": "c805bd18-1e9d-47ae-a85c-64b2ffcf8049",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "35c72fe2-c82e-4518-b142-f289870b0d54",
+              "name": "number",
+              "value": "={{ $json.body.issue.number }}",
+              "type": "number"
+            },
+            {
+              "id": "8cc82fa8-c5d5-4027-a92d-e21d4399b588",
+              "name": "body",
+              "value": "={{ $json.body.comment.body }}",
+              "type": "string"
+            },
+            {
+              "id": "6d95b678-78ef-4baa-a6c9-48638c74fe8d",
+              "name": "full_name",
+              "value": "={{ $json.body.repository.full_name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -48,
+        -224
+      ],
+      "id": "10cf9f5f-6836-4297-b8fa-dcdedc8860eb",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "owner": {
+          "__rl": true,
+          "value": "Nokulagin",
+          "mode": "list",
+          "cachedResultName": "Nokulagin",
+          "cachedResultUrl": "https://github.com/Nokulagin"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "test",
+          "mode": "list",
+          "cachedResultName": "test",
+          "cachedResultUrl": "https://github.com/Nokulagin/test"
+        },
+        "events": [
+          "pull_request"
+        ],
+        "options": {}
+      },
+      "id": "1dac85be-dc83-4dd0-895e-401ec283981d",
+      "name": "PR Trigger",
+      "type": "n8n-nodes-base.githubTrigger",
+      "position": [
+        -496,
+        -32
+      ],
+      "webhookId": "c6a30e53-bda5-4922-87f3-8cdfb399a35f",
+      "notesInFlow": false,
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "pKuzw3MkPacgSqk3",
+          "name": "GitHub account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "a2fbcb70-db02-4f75-b972-4e29ec2b8d6d",
+              "leftValue": "={{ $json.body.action }}",
+              "rightValue": "opened",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        -272,
+        -32
+      ],
+      "id": "4b4270ac-0bee-42e2-8b32-90fff4e89506",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bd5a3209-e7f8-4ae0-a655-00e849300605",
+              "name": "number",
+              "value": "={{ $json.body.number }}",
+              "type": "number"
+            },
+            {
+              "id": "2273352e-7fae-48ad-8b55-ab276a91c710",
+              "name": "body",
+              "value": "={{ $json.body.pull_request.body }}",
+              "type": "string"
+            },
+            {
+              "id": "2f4922b7-9755-4ae1-a236-21552d638c95",
+              "name": "full_name",
+              "value": "={{ $json.body.pull_request.head.repo.full_name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -48,
+        -32
+      ],
+      "id": "d16fb414-b5d2-4500-8231-36c11368d0c6",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "={{ $('If row does not exist').item.json.model }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "7080c09d-707d-4d5b-8011-92ba5fb9de58",
+      "name": "Ai model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        1088,
+        112
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "WzlYEKLymtQbf4oH",
+          "name": "OpenAI account 6"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "PR Trigger1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Review Agent1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Label to PR1": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "If row does not exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If row does not exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get file's PR info": {
+      "main": [
+        [
+          {
+            "node": "Code Review Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If row does not exist": {
+      "main": [
+        [
+          {
+            "node": "Get file's PR info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Code Review Agent1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Add Label to PR1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row": {
+      "main": [
+        []
+      ]
+    },
+    "PR Trigger": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ai model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Code Review Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "8b635f13-664f-4347-80d2-8bb05b6fe755",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "68dbbb4e8fa686c3fd4e9982ade6836edb66976f207553e7ac22df961581c78c"
+  },
+  "nodeGroups": [],
+  "id": "C0r8iqxcMyJmtU5R",
+  "tags": []
+}
